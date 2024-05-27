@@ -40,7 +40,58 @@ impl StateMachine for ClothesMachine {
     type Transition = ClothesAction;
 
     fn next_state(starting_state: &ClothesState, t: &ClothesAction) -> ClothesState {
-        todo!("Exercise 3")
+        match starting_state {
+            ClothesState::Tattered => ClothesState::Tattered,
+            ClothesState::Clean(life) if *life > 1 => {
+                match t {
+                    ClothesAction::Wear => {
+                        let l = *life - 1;
+                        ClothesState::Dirty(l)
+                    },
+                    ClothesAction::Wash => {
+                        let l = *life - 1;
+                        ClothesState::Wet(l)
+                    },
+                    ClothesAction::Dry => {
+                        let l = *life - 1;
+                        ClothesState::Clean(l)
+                    }
+                }
+            },
+            ClothesState::Dirty(life) if *life > 1 => {
+                match t {
+                    ClothesAction::Wear => {
+                        let l = *life - 1;
+                        ClothesState::Dirty(l)
+                    },
+                    ClothesAction::Wash => {
+                        let l = *life - 1;
+                        ClothesState::Wet(l)
+                    },
+                    ClothesAction::Dry => {
+                        let l = *life - 1;
+                        ClothesState::Dirty(l)
+                    }
+                }
+            },
+            ClothesState::Wet(life) if *life > 1 => {
+                match t {
+                    ClothesAction::Wear => {
+                        let l = *life - 1;
+                        ClothesState::Dirty(l)
+                    },
+                    ClothesAction::Wash => {
+                        let l = *life - 1;
+                        ClothesState::Wet(l)
+                    },
+                    ClothesAction::Dry => {
+                        let l = *life - 1;
+                        ClothesState::Clean(l)
+                    }
+                }
+            },
+            _ => ClothesState::Tattered
+        }
     }
 }
 
