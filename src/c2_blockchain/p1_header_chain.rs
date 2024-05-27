@@ -54,7 +54,7 @@ impl Header {
             return true;
         }
         if chain.len() == 1 {
-            return chain[0].height == 1 && chain[0].parent == hash(&self)
+            return chain[0].height == self.height+1 && chain[0].parent == hash(&self)
         }
         chain.windows(2).all(|h| h[1].height == h[0].height+1 && h[1].parent == hash(&h[0]))
         // classic approach:
@@ -71,41 +71,11 @@ impl Header {
 
 /// Build and return a valid chain with exactly five blocks including the genesis block.
 fn build_valid_chain_length_5() -> Vec<Header> {
-    let h0 = Header {
-        parent: 0,
-        height: 0,
-        extrinsics_root: (),
-        state_root: (),
-        consensus_digest: (),
-    };
-    let h1 = Header {
-        parent: hash(&h0),
-        height: 1,
-        extrinsics_root: (),
-        state_root: (),
-        consensus_digest: (),
-    };
-    let h2 = Header {
-        parent: hash(&h1),
-        height: 2,
-        extrinsics_root: (),
-        state_root: (),
-        consensus_digest: (),
-    };
-    let h3 = Header {
-        parent: hash(&h2),
-        height: 3,
-        extrinsics_root: (),
-        state_root: (),
-        consensus_digest: (),
-    };
-    let h4 = Header {
-        parent: hash(&h3),
-        height: 4,
-        extrinsics_root: (),
-        state_root: (),
-        consensus_digest: (),
-    };
+    let h0 = Header::genesis();
+    let h1 = h0.child();
+    let h2 = h1.child();
+    let h3 = h2.child();
+    let h4 = h3.child();
     vec![h0, h1, h2, h3, h4]
 }
 
