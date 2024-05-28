@@ -94,7 +94,18 @@ impl StateMachine for DigitalCashSystem {
     type Transition = CashTransaction;
 
     fn next_state(starting_state: &Self::State, t: &Self::Transition) -> Self::State {
-        todo!("Exercise 1")
+        let mut s = State::new();
+        match t {
+            CashTransaction::Mint { minter, amount } => {
+                s.add_bill(Bill {
+                    owner: *minter,
+                    amount: *amount,
+                    serial: starting_state.next_serial(),
+                });
+                s
+            },
+            _ => s
+        }
     }
 }
 
