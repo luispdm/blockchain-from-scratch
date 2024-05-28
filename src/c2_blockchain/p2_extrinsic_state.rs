@@ -66,7 +66,7 @@ impl Header {
         if chain.len() == 1 {
             return chain[0].height == self.height+1
                 && chain[0].parent == hash(&self)
-                && chain[0].state == self.state + self.extrinsic;
+                && chain[0].state == self.state + chain[0].extrinsic;
         }
         chain.windows(2).all(|h| {
             h[1].height == h[0].height+1
@@ -117,7 +117,10 @@ fn build_an_invalid_chain() -> Vec<Header> {
 ///
 /// Side question: What is the fewest number of headers you could create to achieve this goal.
 fn build_forked_chain() -> (Vec<Header>, Vec<Header>) {
-    todo!("Exercise 6")
+    let h0 = Header::genesis();
+    let h1 = h0.child(20);
+    let h2 = h0.child(1);
+    (vec![h0.clone(), h1], vec![h0, h2])
 
     // Exercise 7: After you have completed this task, look at how its test is written below.
     // There is a critical thinking question for you there.
