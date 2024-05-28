@@ -103,8 +103,33 @@ impl StateMachine for DigitalCashSystem {
                     serial: starting_state.next_serial(),
                 });
                 s
-            },
-            _ => s
+            }
+            CashTransaction::Transfer { spends, receives } => {
+                let mut s = State::new();
+                s.next_serial = starting_state.next_serial;
+
+                let mut total_spends: u64 = 0;
+                spends
+                    .iter()
+                    .for_each(|b| total_spends = total_spends.saturating_add(b.amount));
+                let mut total_receives: u64 = 0;
+                receives
+                    .iter()
+                    .for_each(|b| total_receives = total_receives.saturating_add(b.amount));
+                if total_receives > total_spends {
+                    return starting_state.clone();
+                }
+                // check if a non-existent bill is spent
+                if spends
+                    .iter()
+                    .any(|s_b| !starting_state.bills.contains(s_b)) {
+                        return starting_state.clone();
+                    }
+                // check if the bill is spent twice
+                // ...
+                receives.iter().for_each(|b| s.add_bill(b.clone()));
+                s
+            }
         }
     }
 }
